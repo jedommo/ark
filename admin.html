@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم | مؤسسة عربة الخضار للفواكه والخضار</title>
+  
+  <!-- Premium Fonts & Remixicon Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+  
+  <!-- Admin Stylesheet -->
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       Passcode Security Protection Overlay
+       ========================================== -->
+  <div class="security-overlay" id="securityOverlay">
+    <div class="passcode-card">
+      <div class="passcode-logo-wrap">
+        <i class="ri-shield-keyhole-fill"></i>
+      </div>
+      <h2>لوحة إدارة عربة الخضار</h2>
+      <p>يرجى إدخال الرمز السري للوصول إلى خيارات التعديل والإدارة</p>
+      
+      <div class="passcode-input-group">
+        <input type="password" id="passcodeInput" class="passcode-input" placeholder="••••" maxlength="10" autofocus />
+      </div>
+
+      <button class="btn-unlock" onclick="checkPasscode()">
+        <i class="ri-lock-unlock-line"></i> دخول لوحة التحكم
+      </button>
+
+      <div class="passcode-hint">
+        الرمز الافتراضي: <strong>1234</strong> (يمكنك تغييره بعد الدخول)
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       Main Admin Dashboard Container
+       ========================================== -->
+  <div class="admin-container">
+    
+    <!-- Admin Top Header -->
+    <header class="admin-header">
+      <div class="admin-brand">
+        <img src="logo.jpg" alt="عربة الخضار" class="admin-logo-img" onerror="this.style.display='none'" />
+        <div class="admin-brand-info">
+          <h1>
+            مؤسسة عربة الخضار 
+            <span class="admin-badge">لوحة الإدارة</span>
+          </h1>
+          <p>إدارة وتحديث العروض اليومية والشريط الإخباري العلوي بالرياض</p>
+        </div>
+      </div>
+
+      <div class="admin-header-actions">
+        <a href="index.html" target="_blank" class="btn-action-primary" title="معاينة التغييرات على الموقع الحي">
+          <i class="ri-external-link-line"></i> معاينة الموقع
+        </a>
+        <button class="btn-action-outline" onclick="changePasscode()" title="تغيير الرمز السري">
+          <i class="ri-key-2-line"></i> تغيير الرمز
+        </button>
+        <button class="btn-action-outline" onclick="logoutAdmin()" title="تسجيل الخروج">
+          <i class="ri-logout-box-r-line"></i> قفل اللوحة
+        </button>
+      </div>
+    </header>
+
+    <!-- Analytics & Performance Metrics Bar -->
+    <div class="admin-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+      <div class="panel-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; margin: 0;">
+        <div style="width: 46px; height: 46px; border-radius: 12px; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+          <i class="ri-fire-fill"></i>
+        </div>
+        <div>
+          <strong id="kpiDealsCount" style="font-size: 1.35rem; display: block; color: var(--text-main);">0</strong>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">العروض الفعالة اليوم</span>
+        </div>
+      </div>
+
+      <div class="panel-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; margin: 0;">
+        <div style="width: 46px; height: 46px; border-radius: 12px; background: #fef3c7; color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+          <i class="ri-notification-3-fill"></i>
+        </div>
+        <div>
+          <strong id="kpiTickerCount" style="font-size: 1.35rem; display: block; color: var(--text-main);">0</strong>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">عبارات الشريط الإخباري</span>
+        </div>
+      </div>
+
+      <div class="panel-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; margin: 0;">
+        <div style="width: 46px; height: 46px; border-radius: 12px; background: #dcfce7; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+          <i class="ri-star-smile-fill"></i>
+        </div>
+        <div>
+          <strong id="kpiReviewsCount" style="font-size: 1.35rem; display: block; color: var(--text-main);">0</strong>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">آراء وتقييمات العملاء</span>
+        </div>
+      </div>
+
+      <div class="panel-card" style="padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; margin: 0;">
+        <div style="width: 46px; height: 46px; border-radius: 12px; background: #fee2e2; color: #f43f5e; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+          <i class="ri-store-3-fill"></i>
+        </div>
+        <div>
+          <strong id="kpiBranchesCount" style="font-size: 1.35rem; display: block; color: var(--text-main);">9</strong>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">فروع ومواقع بالرياض</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="admin-tabs">
+      <button class="tab-btn active" data-tab="dealsTab">
+        <i class="ri-fire-fill" style="color: #ef4444;"></i>
+        <span>العروض والتخفيضات اليومية</span>
+      </button>
+      <button class="tab-btn" data-tab="catalogTab">
+        <i class="ri-shopping-basket-fill" style="color: #10b981;"></i>
+        <span>كتالوج المنتجات واللحوم والعصائر</span>
+      </button>
+      <button class="tab-btn" data-tab="imagesTab">
+        <i class="ri-image-edit-fill" style="color: #ec4899;"></i>
+        <span>إدارة جميع صور وسلايدر الموقع</span>
+      </button>
+      <button class="tab-btn" data-tab="branchesTab">
+        <i class="ri-store-3-fill" style="color: #f43f5e;"></i>
+        <span>إدارة فروع ومواقع الرياض</span>
+      </button>
+      <button class="tab-btn" data-tab="tickerTab">
+        <i class="ri-notification-3-fill" style="color: #f59e0b;"></i>
+        <span>الشريط الإخباري العلوي</span>
+      </button>
+      <button class="tab-btn" data-tab="reviewsTab">
+        <i class="ri-star-smile-fill" style="color: #10b981;"></i>
+        <span>آراء العملاء</span>
+      </button>
+      <button class="tab-btn" data-tab="settingsTab">
+        <i class="ri-settings-4-fill" style="color: #8b5cf6;"></i>
+        <span>إعدادات ونصوص المتجر</span>
+      </button>
+      <button class="tab-btn" data-tab="backupTab">
+        <i class="ri-database-2-fill" style="color: #3b82f6;"></i>
+        <span>النسخ والتقارير</span>
+      </button>
+    </nav>
+
+    <!-- ==========================================
+         Tab 1: Daily Deals Management (إدارة العروض)
+         ========================================== -->
+    <main class="tab-content active" id="dealsTab">
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title" id="dealFormTitle">
+              <i class="ri-add-circle-fill" style="color: #ef4444;"></i> إضافة عرض وتخفيض حصري جديد
+            </h2>
+            <p class="panel-card-desc">قم بتعبئة تفاصيل العرض لإنشائه فوراً ونشره في قسم العروض الخاصة بالموقع الحي.</p>
+          </div>
+          <button class="btn-action-outline" id="btnCancelEditDeal" onclick="resetDealForm()" style="display: none;">
+            إلغاء التعديل
+          </button>
+        </div>
+
+        <form id="dealForm" onsubmit="saveDeal(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <input type="hidden" id="dealEditId" value="" />
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="dealTitle">عنوان العرض والتخفيض <span class="req">*</span></label>
+              <input type="text" id="dealTitle" class="form-control" placeholder="مثال: صينية التوفير العائلي الذهبية (18 كجم)" required />
+            </div>
+
+            <div class="form-group">
+              <label for="dealBadgeRibbon">شريط العروض الترويجي <span class="req">*</span></label>
+              <input type="text" id="dealBadgeRibbon" class="form-control" placeholder="مثال: وفر 30% اليوم 🔥" required />
+            </div>
+
+            <div class="form-group">
+              <label for="dealBadgeColor">لون الشريط الترويجي</label>
+              <select id="dealBadgeColor" class="form-control">
+                <option value="red">أحمر ناري 🔥</option>
+                <option value="gold">ذهبي فخم 👑</option>
+                <option value="green">أخضر نضارة 🌿</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dealCategory">تصنيف العرض الفرعي</label>
+              <input type="text" id="dealCategory" class="form-control" placeholder="مثال: العرض الأقوى للعائلات" />
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="dealImage">رابط صورة العرض (URL) أو رفع صورة من جهازك <span class="req">*</span></label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="url" id="dealImage" class="form-control" placeholder="https://images.unsplash.com/..." required style="flex: 1;" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-cloud-fill"></i> رفع صورة
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'dealImage')" />
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="dealFloatingTag">شارة العرض المميزة (Floating Badge)</label>
+              <input type="text" id="dealFloatingTag" class="form-control" placeholder="مثال: هدية صينية ورقيات مجانية 🎁" />
+            </div>
+
+            <div class="form-group">
+              <label for="dealStockPill">حالة توفر الكمية</label>
+              <input type="text" id="dealStockPill" class="form-control" placeholder="مثال: متبقي 6 صواني فقط" />
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="dealDesc">وصف العرض التفصيلي <span class="req">*</span></label>
+              <textarea id="dealDesc" class="form-control" rows="2" placeholder="اكتب وصفاً جذاباً يشرح مكونات العرض والجودة..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="dealPerk1">الميزة الأولى</label>
+              <input type="text" id="dealPerk1" class="form-control" placeholder="مثال: 8 كجم فواكه منوعة فاخرة" />
+            </div>
+
+            <div class="form-group">
+              <label for="dealPerk2">الميزة الثانية</label>
+              <input type="text" id="dealPerk2" class="form-control" placeholder="مثال: 10 كجم خضار طازجة يومية" />
+            </div>
+
+            <div class="form-group">
+              <label for="dealPerk3">الميزة الثالثة</label>
+              <input type="text" id="dealPerk3" class="form-control" placeholder="مثال: توصيل سريع يشمل كل مناطق الرياض" />
+            </div>
+
+            <div class="form-group">
+              <label for="dealStockPercent">نسبة الحجز (0% إلى 100%)</label>
+              <input type="number" id="dealStockPercent" class="form-control" value="85" min="1" max="100" />
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="submit" class="btn-action-primary" style="background: #ef4444;">
+              <i class="ri-save-line"></i> <span id="dealSubmitBtnText">حفظ العرض بالصفحة الحية</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Live Deals List Container -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-list-check"></i> قائمة العروض والتخفيضات الفعالة
+            </h2>
+            <p class="panel-card-desc">العروض المعروضة حالياً لزوار الموقع أهالي الرياض.</p>
+          </div>
+          <button class="btn-action-outline" onclick="resetDealsToDefault()">
+            <i class="ri-refresh-line"></i> استعادة العروض الافتراضية
+          </button>
+        </div>
+
+        <div id="adminDealsList" class="admin-items-grid">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab 2: Catalog Products Management (إدارة المنتجات)
+         ========================================== -->
+    <main class="tab-content" id="catalogTab">
+      <!-- Add / Edit Catalog Product Form Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title" id="catalogFormTitle">
+              <i class="ri-add-circle-fill" style="color: #10b981;"></i> إضافة صنف / منتج جديد للكتالوج
+            </h2>
+            <p class="panel-card-desc">يمكنك إضافة فواكه، عصائر طبيعية، لحوم بلدي، أو صواني هدايا وتعديل أسعارها وصورها بكل سهولة.</p>
+          </div>
+          <button class="btn-action-outline" id="btnCancelEditCatalog" onclick="resetCatalogForm()" style="display: none;">
+            إلغاء التعديل
+          </button>
+        </div>
+
+        <form id="catalogProductForm" onsubmit="saveCatalogProduct(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input type="hidden" id="catalogEditId" value="" />
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="catalogName">اسم المنتج / الصنف <span class="req">*</span></label>
+              <input type="text" id="catalogName" class="form-control" placeholder="مثال: عصير مانجو وشيك استوائي طازج" required />
+            </div>
+
+            <div class="form-group">
+              <label for="catalogCategory">التصنيف الرئيسي <span class="req">*</span></label>
+              <select id="catalogCategory" class="form-control" required>
+                <option value="juices">🥤 عصائر ومشروبات طبيعية</option>
+                <option value="meats">🥩 ملحمة اللحوم البلدية</option>
+                <option value="baskets">👑 صواني الفواكه الملكية</option>
+                <option value="melons">🍉 بطيخ وشمام</option>
+                <option value="citrus">🍊 برتقال وحمضيات</option>
+                <option value="tropical">🍌 موز وفواكه استوائية</option>
+                <option value="berries">🍇 عنب وفراولة</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="catalogUnit">الكمية والوزن / الوصف القصير <span class="req">*</span></label>
+              <input type="text" id="catalogUnit" class="form-control" placeholder="مثال: جالون عائلي 1.5 لتر معصور طازجاً" required />
+            </div>
+
+            <div class="form-group">
+              <label for="catalogBadge">شارة المنتج الترويجية</label>
+              <input type="text" id="catalogBadge" class="form-control" placeholder="مثال: طازج 100% 🥤 أو بلدي فاخر 🥩" />
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="catalogImageUrl">رابط صورة المنتج (URL) أو رفع صورة من جهازك <span class="req">*</span></label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="url" id="catalogImageUrl" class="form-control" placeholder="https://images.unsplash.com/..." required style="flex: 1;" onchange="previewCatalogImage(this.value)" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-cloud-fill"></i> رفع صورة
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleCatalogFileUpload(event)" />
+                </label>
+              </div>
+              <div id="catalogImagePreview" style="margin-top: 0.5rem; display: none;">
+                <img id="catalogPreviewImg" src="" alt="معاينة الصورة" style="max-height: 100px; border-radius: 8px; border: 1px solid var(--border-color);" />
+              </div>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="catalogBenefits">مميزات ووصف الصنف</label>
+              <textarea id="catalogBenefits" class="form-control" rows="2" placeholder="أضف وصفاً جذاباً للنقاء، الجودة، والقيمة الغذائية للصنف..."></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="submit" class="btn-action-primary" style="background: #10b981;">
+              <i class="ri-save-line"></i> <span id="catalogSubmitBtnText">حفظ الصنف بالكتالوج</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Catalog List Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-list-check-2"></i> قائمة أصناف الكتالوج الحالية
+            </h2>
+            <p class="panel-card-desc">استعرض أو عدّل أو احذف أي صنف يعرض بالموقع الحي.</p>
+          </div>
+          <button class="btn-action-outline" onclick="resetCatalogToDefault()">
+            <i class="ri-refresh-line"></i> استعادة الكتالوج الافتراضي
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          <button class="btn-action-outline active" onclick="filterAdminCatalog('all', this)">جميع الأصناف</button>
+          <button class="btn-action-outline" onclick="filterAdminCatalog('juices', this)">🥤 العصائر</button>
+          <button class="btn-action-outline" onclick="filterAdminCatalog('meats', this)">🥩 اللحوم</button>
+          <button class="btn-action-outline" onclick="filterAdminCatalog('baskets', this)">👑 الصواني</button>
+          <button class="btn-action-outline" onclick="filterAdminCatalog('melons', this)">🍉 بطيخ وشمام</button>
+        </div>
+
+        <div id="adminCatalogList" class="admin-items-grid">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab 3: Site Images & Hero Slideshow Editor (إدارة صور الموقع)
+         ========================================== -->
+    <main class="tab-content" id="imagesTab">
+      
+      <!-- Hero Showcase Slides Editor Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-image-slider-fill" style="color: #ec4899;"></i> إدارة صور سلايدر الهيرو الرئيسي (5 شرائح متحركة)
+            </h2>
+            <p class="panel-card-desc">يمكنك تعديل روابط أو رفع صور جديدة لشرائح معرض الصفحة الرئيسية (التشكيلة، العصائر، اللحوم، الصواني، البطيخ).</p>
+          </div>
+          <button class="btn-action-outline" onclick="resetHeroSlidesToDefault()">
+            <i class="ri-refresh-line"></i> استعادة الصور الافتراضية
+          </button>
+        </div>
+
+        <form onsubmit="saveHeroSlidesImages(event)" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            
+            <!-- Slide 0: Fruit Produce -->
+            <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label style="font-weight: 800; display: block; margin-bottom: 0.5rem; color: var(--primary);">الشريحة 1: التشكيلة الرئيسية الطازجة</label>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="text" id="heroSlide0" class="form-control" value="fresh_produce_hero.jpg" placeholder="رابط الصورة..." style="flex:1;" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-2-line"></i>
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleHeroSlideUpload(event, 0)" />
+                </label>
+              </div>
+              <img id="heroSlidePreview0" src="fresh_produce_hero.jpg" alt="معاينة الشريحة 1" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=600&q=80'" />
+            </div>
+
+            <!-- Slide 1: Juices -->
+            <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label style="font-weight: 800; display: block; margin-bottom: 0.5rem; color: #f59e0b;">الشريحة 2: قسم العصائر الطبيعية 100% 🥤</label>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="text" id="heroSlide1" class="form-control" value="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=1000&q=85" placeholder="رابط الصورة..." style="flex:1;" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-2-line"></i>
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleHeroSlideUpload(event, 1)" />
+                </label>
+              </div>
+              <img id="heroSlidePreview1" src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=1000&q=85" alt="معاينة الشريحة 2" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;" />
+            </div>
+
+            <!-- Slide 2: Meats -->
+            <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label style="font-weight: 800; display: block; margin-bottom: 0.5rem; color: #ef4444;">الشريحة 3: قسم ملحمة اللحوم البلدية 🥩</label>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="text" id="heroSlide2" class="form-control" value="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=1000&q=85" placeholder="رابط الصورة..." style="flex:1;" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-2-line"></i>
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleHeroSlideUpload(event, 2)" />
+                </label>
+              </div>
+              <img id="heroSlidePreview2" src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=1000&q=85" alt="معاينة الشريحة 3" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;" />
+            </div>
+
+            <!-- Slide 3: Baskets -->
+            <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label style="font-weight: 800; display: block; margin-bottom: 0.5rem; color: #d97706;">الشريحة 4: صواني الضيافة والهدايا الملكية 👑</label>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="text" id="heroSlide3" class="form-control" value="https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=1000&q=85" placeholder="رابط الصورة..." style="flex:1;" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-2-line"></i>
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleHeroSlideUpload(event, 3)" />
+                </label>
+              </div>
+              <img id="heroSlidePreview3" src="https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=1000&q=85" alt="معاينة الشريحة 4" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;" />
+            </div>
+
+            <!-- Slide 4: Melons -->
+            <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <label style="font-weight: 800; display: block; margin-bottom: 0.5rem; color: #10b981;">الشريحة 5: البطيخ والشمام السكري 🍉</label>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <input type="text" id="heroSlide4" class="form-control" value="https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=1000&q=85" placeholder="رابط الصورة..." style="flex:1;" />
+                <label class="btn-action-outline" style="cursor: pointer; margin: 0; white-space: nowrap;">
+                  <i class="ri-upload-2-line"></i>
+                  <input type="file" accept="image/*" style="display: none;" onchange="handleHeroSlideUpload(event, 4)" />
+                </label>
+              </div>
+              <img id="heroSlidePreview4" src="https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=1000&q=85" alt="معاينة الشريحة 5" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px;" />
+            </div>
+
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn-action-primary" style="background: #ec4899;">
+              <i class="ri-save-line"></i> حفظ صور معرض سلايدر الهيرو
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Daily Stories Images Editor Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-snapchat-fill" style="color: #f59e0b;"></i> إدارة صور دوائر وقصص الاستوري اليومية (Daily Stories)
+            </h2>
+            <p class="panel-card-desc">تعديل صور وعناوين دوائر الاستوري التي تظهر في الصفحة الرئيسية أعلى المنتجات.</p>
+          </div>
+          <button class="btn-action-outline" onclick="resetStoriesToDefault()">
+            <i class="ri-refresh-line"></i> استعادة قصص الاستوري الافتراضية
+          </button>
+        </div>
+
+        <div id="adminStoriesList" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+          <button class="btn-action-primary" onclick="saveStoriesFromAdmin()" style="background: #f59e0b;">
+            <i class="ri-save-line"></i> حفظ جميع صور قصص الاستوري
+          </button>
+        </div>
+      </div>
+
+    </main>
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-fire-fill"></i> قائمة العروض اليومية المعروضة
+            </h2>
+            <p class="panel-card-desc">تحكم بالعروض التي تظهر في قسم "عروض اليوم الحصرية" مع صورها وأسعارها الترويجية.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="admin-badge" id="dealsCountBadge">0 عرض</span>
+            <button class="btn-action-primary" onclick="openDealModal()">
+              <i class="ri-add-line"></i> إضافة عرض جديد
+            </button>
+          </div>
+        </div>
+
+        <!-- Deals Grid -->
+        <div class="admin-items-grid" id="dealsAdminGrid">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab 2: Branches & Locations Management (إدارة الفروع)
+         ========================================== -->
+    <main class="tab-content" id="branchesTab">
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-store-3-fill" style="color: #f43f5e;"></i> إدارة فروع ومواقع قوقل ماب بالرياض
+            </h2>
+            <p class="panel-card-desc">تعديل أسماء الفروع، عناوين الأحياء، أرقام التواصل والواتساب، ساعات العمل، وروابط قوقل ماب الحية.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="admin-badge" id="branchesCountBadge">9 فروع</span>
+            <button class="btn-action-primary" onclick="openBranchModal()">
+              <i class="ri-add-line"></i> إضافة فرع جديد
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Branch Search Input -->
+        <div style="margin-bottom: 1.25rem;">
+          <input type="text" id="adminBranchSearchInput" class="form-control" placeholder="🔍 ابحث باسم الفرع، الحي، أو نطاق التغطية بالرياض..." oninput="renderAdminBranches()" />
+        </div>
+
+        <!-- Branches Admin Grid -->
+        <div class="admin-items-grid" id="branchesAdminGrid">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab 2: Top Ticker Management (الشريط الإخباري)
+         ========================================== -->
+    <main class="tab-content" id="tickerTab">
+      
+      <!-- Quick Promo Code Push Card -->
+      <div class="panel-card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%); border: 1.5px solid var(--accent-gold);">
+        <div class="panel-card-header">
+          <div>
+            <h3 class="panel-card-title" style="color: var(--accent-gold);">
+              <i class="ri-flashlight-fill"></i> منشئ عروض كود الخصم السريع
+            </h3>
+            <p class="panel-card-desc">أنشئ تنبيهاً فورياً لكود خصم يومي وانشره فوراً في أعلى الشريط الإخباري بنقرة واحدة.</p>
+          </div>
+        </div>
+
+        <form onsubmit="quickPushPromoCode(event)" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <input type="text" id="quickPromoInput" class="form-control" style="flex: 1; min-width: 260px;" placeholder="مثال: خصم 20% لجميع طلبيات اليوم بالرياض! استخدم كود: RIYADH20 🎁" required />
+          <button type="submit" class="btn-action-primary" style="background: var(--accent-gold); color: #ffffff;">
+            <i class="ri-send-plane-fill"></i> نشر فوراً للشريط 🚀
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Ticker Preview Card -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-tv-line"></i> معاينة حية للشريط الإخباري المتحرك
+            </h2>
+            <p class="panel-card-desc">هكذا يظهر الشريط تماماً في أعلى الموقع لزوارك وعملائك بالرياض.</p>
+          </div>
+          <button class="btn-action-outline" onclick="resetTickerToDefault()">
+            <i class="ri-refresh-line"></i> استعادة العبارات الافتراضية
+          </button>
+        </div>
+
+        <div class="live-ticker-preview-wrapper">
+          <span class="preview-label-tag">معاينة مباشرة</span>
+          <div class="live-ticker-track" id="liveTickerTrack">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Edit Ticker Form -->
+      <div class="panel-card" id="tickerFormCard">
+        <h3 class="panel-card-title" style="margin-bottom: 1rem;">
+          <i class="ri-add-circle-fill"></i> إضافة عبارة جديدة للشريط
+        </h3>
+
+        <form onsubmit="addOrUpdateTicker(event)">
+          <div class="form-grid">
+            <div class="form-group form-group-full">
+              <label for="tickerTextInput">نص العبارة الإخبارية <span class="req">*</span></label>
+              <input type="text" id="tickerTextInput" class="form-control" placeholder="مثال: خصم خاص 20% لعملاء فرع وادي لبن اليوم!" required />
+            </div>
+
+            <!-- Icon Choice -->
+            <div class="form-group">
+              <label>اختر الأيقونة المناسبة:</label>
+              <input type="hidden" id="tickerIconInput" value="ri-sparkle-fill" />
+              <div class="icon-picker-grid">
+                <button type="button" class="icon-choice active" data-icon="ri-sparkle-fill" onclick="selectTickerIcon('ri-sparkle-fill', this)" title="بريق">
+                  <i class="ri-sparkle-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-heart-3-fill" onclick="selectTickerIcon('ri-heart-3-fill', this)" title="قلب">
+                  <i class="ri-heart-3-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-leaf-fill" onclick="selectTickerIcon('ri-leaf-fill', this)" title="ورقة شجر">
+                  <i class="ri-leaf-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-fire-fill" onclick="selectTickerIcon('ri-fire-fill', this)" title="شعلة عروض">
+                  <i class="ri-fire-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-sun-fill" onclick="selectTickerIcon('ri-sun-fill', this)" title="شمس الصباح">
+                  <i class="ri-sun-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-truck-fill" onclick="selectTickerIcon('ri-truck-fill', this)" title="توصيل سريع">
+                  <i class="ri-truck-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-shield-check-fill" onclick="selectTickerIcon('ri-shield-check-fill', this)" title="ضمان الجودة">
+                  <i class="ri-shield-check-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-trophy-fill" onclick="selectTickerIcon('ri-trophy-fill', this)" title="تميز">
+                  <i class="ri-trophy-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-hand-heart-fill" onclick="selectTickerIcon('ri-hand-heart-fill', this)" title="اختيار بحب">
+                  <i class="ri-hand-heart-fill"></i>
+                </button>
+                <button type="button" class="icon-choice" data-icon="ri-map-pin-2-fill" onclick="selectTickerIcon('ri-map-pin-2-fill', this)" title="الفروع">
+                  <i class="ri-map-pin-2-fill"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Color Choice -->
+            <div class="form-group">
+              <label>لون الأيقونة:</label>
+              <input type="hidden" id="tickerColorInput" value="#f59e0b" />
+              <div class="color-picker-group">
+                <span class="color-dot-preset active" style="background-color: #f59e0b;" onclick="selectTickerColor('#f59e0b', this)" title="ذهبي"></span>
+                <span class="color-dot-preset" style="background-color: #10b981;" onclick="selectTickerColor('#10b981', this)" title="أخضر زمردي"></span>
+                <span class="color-dot-preset" style="background-color: #84cc16;" onclick="selectTickerColor('#84cc16', this)" title="ليموني نضر"></span>
+                <span class="color-dot-preset" style="background-color: #ef4444;" onclick="selectTickerColor('#ef4444', this)" title="أحمر ملفت"></span>
+                <span class="color-dot-preset" style="background-color: #f43f5e;" onclick="selectTickerColor('#f43f5e', this)" title="وردي رقيق"></span>
+                <span class="color-dot-preset" style="background-color: #3b82f6;" onclick="selectTickerColor('#3b82f6', this)" title="أزرق ساطع"></span>
+                <span class="color-dot-preset" style="background-color: #8b5cf6;" onclick="selectTickerColor('#8b5cf6', this)" title="بنفسجي ملكي"></span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+            <button type="submit" class="btn-action-primary" id="btnSubmitTicker">
+              <i class="ri-add-line"></i> إضافة للشريط
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Current Ticker Items List -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <h3 class="panel-card-title">
+            <i class="ri-list-check-2"></i> العبارات الحالية في الشريط
+          </h3>
+          <span class="admin-badge" id="tickerCountBadge">0 عبارة</span>
+        </div>
+
+        <div class="ticker-admin-list" id="tickerAdminList">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab 3: Customer Reviews Moderation (آراء العملاء)
+         ========================================== -->
+    <main class="tab-content" id="reviewsTab">
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-star-smile-fill" style="color: #10b981;"></i> آراء وتقييمات العملاء المسجلة
+            </h2>
+            <p class="panel-card-desc">استعرض أو تتبع التقييمات المسجلة من قِبل عملاء الموقع بالرياض.</p>
+          </div>
+          <span class="admin-badge" id="reviewsCountBadge">0 تقييم</span>
+        </div>
+
+        <!-- Rating Filter Tabs -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+          <button class="btn-action-outline active" onclick="filterAdminReviews('all', this)">جميع التقييمات</button>
+          <button class="btn-action-outline" onclick="filterAdminReviews(5, this)">⭐⭐⭐⭐⭐ (5 نجوم)</button>
+          <button class="btn-action-outline" onclick="filterAdminReviews(4, this)">⭐⭐⭐⭐ (4 نجوم)</button>
+          <button class="btn-action-outline" onclick="filterAdminReviews(3, this)">⭐⭐⭐ (3 نجوم)</button>
+        </div>
+
+        <div id="adminReviewsList" class="admin-items-grid">
+          <!-- Rendered dynamically by admin.js -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab: Store General Settings (إعدادات المتجر)
+         ========================================== -->
+    <main class="tab-content" id="settingsTab">
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-settings-4-fill" style="color: #8b5cf6;"></i> إعدادات المتجر والرقم الموحد
+            </h2>
+            <p class="panel-card-desc">ضبط اسم المؤسسة الرسمي، رقم الواتساب الموحد للطلبات، رسائل الاستفسارات، وحد التوصيل المجاني بالرياض.</p>
+          </div>
+        </div>
+
+        <form onsubmit="saveStoreSettings(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="settingStoreName">اسم المؤسسة التجاري <span class="req">*</span></label>
+              <input type="text" id="settingStoreName" class="form-control" value="مؤسسة عربة الخضار للفواكه والخضار" required />
+            </div>
+
+            <div class="form-group">
+              <label for="settingUnifiedPhone">الرقم الموحد للواتساب والاتصال (صيغة دولية) <span class="req">*</span></label>
+              <input type="text" id="settingUnifiedPhone" class="form-control" value="966115007271" required dir="ltr" />
+            </div>
+
+            <div class="form-group">
+              <label for="settingUnifiedDisplay">الشكل المعروض للرقم الموحد <span class="req">*</span></label>
+              <input type="text" id="settingUnifiedDisplay" class="form-control" value="+966 11 500 7271" required dir="ltr" />
+            </div>
+
+            <div class="form-group">
+              <label for="settingFreeDevTarget">عدد الأصناف للحصول على توصيل مجاني</label>
+              <input type="number" id="settingFreeDevTarget" class="form-control" value="3" min="1" max="10" />
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="settingWhatsappMsg">رسالة الاستفسار والطلب الافتراضية للواتساب</label>
+              <textarea id="settingWhatsappMsg" class="form-control" rows="2">السلام عليكم ورحمة الله، أود الاستفسار والطلب من مؤسسة عربة الخضار بالرياض.</textarea>
+            </div>
+
+            <div class="form-group form-group-full" style="flex-direction: row; align-items: center; gap: 0.75rem; background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md);">
+              <input type="checkbox" id="settingMaintenanceMode" style="width: 20px; height: 20px; accent-color: var(--accent-red);" />
+              <div>
+                <label for="settingMaintenanceMode" style="cursor: pointer; margin: 0; font-weight: 800; color: var(--accent-red);">تفعيل وضع الصيانة والإغلاق التلقائي للموقع</label>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">عند التفعيل، يتم تنبيه الزوار في الشريط أن الطلبات متوقفة مؤقتاً لتحديث المخزون.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn-action-primary" style="background: #8b5cf6;">
+              <i class="ri-save-line"></i> حفظ إعدادات المتجر
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- ==========================================
+         Tab 4: Backup, Export & Reports
+         ========================================== -->
+    <main class="tab-content" id="backupTab">
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div>
+            <h2 class="panel-card-title">
+              <i class="ri-download-cloud-2-line"></i> تصدير ونسخ احتياطي وتقارير
+            </h2>
+            <p class="panel-card-desc">يمكنك تصدير كشف العروض والمنتجات كملف Excel (CSV) أو تنزيل ملف JSON أو طباعة تقرير يومي شامل.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <button class="btn-action-primary" onclick="exportDataToCSV()" style="background: #10b981;">
+            <i class="ri-file-excel-2-line"></i> تصدير كشف البيانات (Excel CSV)
+          </button>
+
+          <button class="btn-action-primary" onclick="printDailyReport()" style="background: #3b82f6;">
+            <i class="ri-printer-line"></i> طباعة التقرير اليومي 🖨️
+          </button>
+
+          <button class="btn-action-primary" onclick="downloadBackupJson()">
+            <i class="ri-download-2-line"></i> تنزيل نسخ احتياطي (JSON)
+          </button>
+          
+          <label class="btn-action-outline" style="cursor: pointer;">
+            <i class="ri-upload-2-line"></i> استيراد نسخ احتياطي
+            <input type="file" accept=".json" onchange="importBackupJson(event)" style="display: none;" />
+          </label>
+
+          <button class="btn-action-outline" onclick="resetAllDataToDefault()" style="color: #ef4444; border-color: #fca5a5;">
+            <i class="ri-refresh-line"></i> استعادة ضبط الافتراضات
+          </button>
+        </div>
+
+        <h3 class="panel-card-title" style="margin-bottom: 0.5rem; font-size: 1.1rem;">
+          <i class="ri-code-box-line"></i> كود البيانات المحدثة (JSON)
+        </h3>
+        <p class="panel-card-desc" style="margin-bottom: 1rem;">
+          تُحفظ البيانات تلقائياً في المتصفح. يمكنك أيضاً نسخ هذا الكود إذا أردت تثبيت البيانات للأبد داخل الملفات.
+        </p>
+
+        <div class="code-preview-box">
+          <button class="btn-copy-code" onclick="copyExportCode()"><i class="ri-file-copy-line"></i> نسخ الكود</button>
+          <pre id="codeExportBox">{}</pre>
+        </div>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
+          <h4 style="color: var(--accent-red); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+            <i class="ri-error-warning-line"></i> إعادة ضبط المصنع
+          </h4>
+          <p class="panel-card-desc" style="margin-bottom: 1rem;">
+            استعادة العروض الأصلية وعبارات الشريط الافتراضية كما كانت عند تسليم الموقع أول مرة.
+          </p>
+          <button class="btn-action-outline" style="color: var(--accent-red); border-color: rgba(239, 68, 68, 0.3);" onclick="resetAllToDefault()">
+            <i class="ri-restart-line"></i> إعادة ضبط جميع البيانات للافتراضي
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ==========================================
+       Add / Edit Deal Modal Window
+       ========================================== -->
+  <div class="modal-overlay" id="dealModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="dealModalTitle"><i class="ri-add-circle-line"></i> إضافة عرض ترويجي جديد</h3>
+        <button class="btn-close-modal" onclick="closeDealModal()" aria-label="إغلاق">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <form id="dealForm" onsubmit="saveDealFromModal(event)">
+        <div class="form-grid">
+          
+          <!-- Offer Title -->
+          <div class="form-group form-group-full">
+            <label for="dealTitle">عنوان العرض والوزن <span class="req">*</span></label>
+            <input type="text" id="dealTitle" class="form-control" placeholder="مثال: صينية التوفير العائلي الذهبية (18 كجم)" required />
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label for="dealCategory">تصنيف أو فئة العرض</label>
+            <input type="text" id="dealCategory" class="form-control" placeholder="مثال: العرض الأقوى للعائلات" />
+          </div>
+
+          <!-- Badge Text -->
+          <div class="form-group">
+            <label for="dealBadgeRibbon">نص شريط الخصم</label>
+            <input type="text" id="dealBadgeRibbon" class="form-control" placeholder="مثال: وفر 30% اليوم 🔥" />
+          </div>
+
+          <!-- Badge Color -->
+          <div class="form-group">
+            <label>لون شريط الخصم:</label>
+            <div class="badge-color-options">
+              <label class="badge-radio-label red">
+                <input type="radio" name="dealBadgeColor" value="red" checked /> أحمر ناري
+              </label>
+              <label class="badge-radio-label gold">
+                <input type="radio" name="dealBadgeColor" value="gold" /> ذهبي فاخر
+              </label>
+              <label class="badge-radio-label green">
+                <input type="radio" name="dealBadgeColor" value="green" /> أخضر نضر
+              </label>
+            </div>
+          </div>
+
+          <!-- Floating Tag -->
+          <div class="form-group">
+            <label for="dealFloatingTag">الوسم العائم على الصورة</label>
+            <input type="text" id="dealFloatingTag" class="form-control" placeholder="مثال: هدية صينية ورقيات مجانية 🎁" />
+          </div>
+
+          <!-- Stock Pill Text -->
+          <div class="form-group">
+            <label for="dealStockPill">حالة التوفر أو الكمية</label>
+            <input type="text" id="dealStockPill" class="form-control" placeholder="مثال: متبقي 6 صواني فقط" />
+          </div>
+
+          <!-- Stock Range -->
+          <div class="form-group">
+            <label for="dealStockPercent">نسبة حجز العرض: <strong id="stockPercentDisplay" style="color: var(--primary);">85%</strong></label>
+            <input type="range" id="dealStockPercent" min="10" max="98" value="85" class="form-control" style="padding: 0.3rem;" oninput="document.getElementById('stockPercentDisplay').textContent = this.value + '%'" />
+          </div>
+
+          <!-- Image Upload Option (File or URL) -->
+          <div class="form-group form-group-full">
+            <label>صورة العرض:</label>
+            
+            <div class="image-upload-wrapper" id="imageUploadWrapper">
+              <input type="file" id="dealImageFile" accept="image/*" class="file-input-hidden" />
+              <div class="upload-prompt">
+                <i class="ri-upload-cloud-2-line"></i>
+                <span>اضغط هنا لرفع صورة من جهازك (كمبيوتر أو جوال)</span>
+                <small>يتم ضغط الصورة تلقائياً لتناسب المتصفح بسرعة فائقة</small>
+              </div>
+            </div>
+
+            <!-- Preview box -->
+            <div class="image-preview-box" id="imagePreviewBox">
+              <img src="" id="imagePreviewImg" alt="معاينة الصورة" />
+              <button type="button" class="btn-remove-preview" onclick="clearImagePreview()" title="إزالة الصورة">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+
+            <div style="margin-top: 0.6rem;">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">أو ضع رابط صورة مباشر من الإنترنت:</span>
+              <input type="url" id="dealImageUrl" class="form-control" placeholder="https://images.unsplash.com/..." style="margin-top: 0.3rem;" />
+            </div>
+          </div>
+
+          <!-- Offer Description -->
+          <div class="form-group form-group-full">
+            <label for="dealDesc">وصف العرض</label>
+            <textarea id="dealDesc" class="form-control" placeholder="اكتب وصفاً جذاباً لمحتويات هذا العرض وتفاصيله..."></textarea>
+          </div>
+
+          <!-- Offer Perks / Features -->
+          <div class="form-group form-group-full">
+            <label for="dealPerks">مميزات ومحتويات العرض (كل ميزة في سطر منفصل):</label>
+            <textarea id="dealPerks" class="form-control" style="min-height: 90px;" placeholder="8 كجم فواكه منوعة فاخرة&#10;10 كجم خضار طازجة يومية&#10;توصيل سريع يشمل كل مناطق الرياض"></textarea>
+          </div>
+
+          <!-- Is Featured Checkbox -->
+          <div class="form-group form-group-full" style="flex-direction: row; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" id="dealFeatured" style="width: 18px; height: 18px; accent-color: var(--primary);" />
+            <label for="dealFeatured" style="cursor: pointer; margin: 0;">تمييز هذا العرض كـ "العرض الأبرز" (إطار ذهبي متوهج)</label>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action-outline" onclick="closeDealModal()">إلغاء</button>
+          <button type="submit" class="btn-action-primary">
+            <i class="ri-save-line"></i> حفظ العرض
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       Add / Edit Branch Modal Window
+       ========================================== -->
+  <div class="modal-overlay" id="branchModal">
+    <div class="modal-container" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="branchModalTitle"><i class="ri-store-3-line"></i> تعديل بيانات الفرع والموقع</h3>
+        <button class="btn-close-modal" onclick="closeBranchModal()" aria-label="إغلاق">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <form id="branchForm" onsubmit="saveBranchFromModal(event)">
+        <input type="hidden" id="branchModalId" />
+        
+        <div class="form-grid">
+          
+          <div class="form-group">
+            <label for="branchModalName">اسم الفرع المختصر <span class="req">*</span></label>
+            <input type="text" id="branchModalName" class="form-control" placeholder="مثال: الربوة" required />
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalDisplayName">الاسم المعروض كاملاً <span class="req">*</span></label>
+            <input type="text" id="branchModalDisplayName" class="form-control" placeholder="مثال: فرع الربوة" required />
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalZone">المنطقة الجغرافية <span class="req">*</span></label>
+            <select id="branchModalZone" class="form-control" required onchange="updateZoneNamePreset(this.value)">
+              <option value="east">شرق الرياض (east)</option>
+              <option value="west">غرب الرياض (west)</option>
+              <option value="south">جنوب الرياض (south)</option>
+              <option value="north">شمال الرياض (north)</option>
+              <option value="center">وسط الرياض (center)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalZoneName">اسم النطاق المعروض <span class="req">*</span></label>
+            <input type="text" id="branchModalZoneName" class="form-control" placeholder="مثال: شرق ووسط الرياض" required />
+          </div>
+
+          <div class="form-group form-group-full">
+            <label for="branchModalAddress">العنوان والحي التفصيلي <span class="req">*</span></label>
+            <input type="text" id="branchModalAddress" class="form-control" placeholder="مثال: شارع الخليفة المنتصر بالله، حي الربوة، الرياض 14215" required />
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalHours">ساعات العمل اليومية</label>
+            <input type="text" id="branchModalHours" class="form-control" placeholder="8:00 ص - 12:00 منتصف الليل" />
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalCoverage">نطاق التغطية والتوصيل</label>
+            <input type="text" id="branchModalCoverage" class="form-control" placeholder="مثال: الربوة، الريان، والملز" />
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalLocalPhone">رقم جوال الفرع / التواصل المباشر</label>
+            <input type="text" id="branchModalLocalPhone" class="form-control" placeholder="966506672822" dir="ltr" />
+          </div>
+
+          <div class="form-group">
+            <label for="branchModalStatusOverride">حالة العمل الحالية للفرع</label>
+            <select id="branchModalStatusOverride" class="form-control">
+              <option value="auto">تلقائي (حسب الوقت الفعلي) ⏰</option>
+              <option value="open">مفتوح الآن باستمرار (Force Open) 🟢</option>
+              <option value="closed">مغلق حالياً (Force Closed) 🔴</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label for="branchModalMapDirectUrl">رابط قوقل ماب المباشر (Google Maps Direct URL)</label>
+            <input type="url" id="branchModalMapDirectUrl" class="form-control" placeholder="https://maps.app.goo.gl/..." dir="ltr" />
+          </div>
+
+          <div class="form-group form-group-full">
+            <label for="branchModalMapEmbedUrl">رابط تضمين الخريطة (Google Maps Iframe Embed URL)</label>
+            <input type="url" id="branchModalMapEmbedUrl" class="form-control" placeholder="https://maps-api-ssl.google.com/maps?hl=ar..." dir="ltr" />
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action-outline" onclick="closeBranchModal()">إلغاء</button>
+          <button type="submit" class="btn-action-primary">
+            <i class="ri-save-line"></i> حفظ الفرع والموقع
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="admin-toast-container" id="adminToastContainer"></div>
+
+  <!-- Admin JavaScript Logic -->
+  <script src="admin.js"></script>
+</body>
+</html>
